@@ -1,0 +1,52 @@
+{
+  "texts": [
+    {
+      "id": 1,
+      "content": "The Document Object Model (DOM) is a programming interface for web documents. It represents the page as nodes and objects that can be modified with JavaScript. The DOM is not part of JavaScript, but browsers provide it as an environment for JavaScript to interact with HTML and CSS. Common DOM methods include getElementById(), querySelector(), and createElement(), which allow developers to select and manipulate elements on the page."
+    },
+    {
+      "id": 2,
+      "content": "Events in JavaScript are actions or occurrences that happen in the browser, such as a user clicking a button or a page finishing loading. Event listeners are functions that wait for specific events to occur and then execute code in response. The addEventListener() method attaches an event handler to an element without overwriting existing event handlers. For example, element.addEventListener('click', function() { console.log('Element clicked!'); });"
+    },
+    {
+      "id": 3,
+      "content": "Static methods in JavaScript are methods that belong to a class rather than an instance of the class. They are called on the class itself, not on objects created from the class. For example, Math.random() is a static method of the Math class. Static methods are defined using the static keyword in class declarations: static methodName() {}. They cannot access instance properties or methods directly, as they don't have access to the 'this' keyword."
+    },
+    {
+      "id": 4,
+      "content": "Async functions in JavaScript provide a cleaner way to work with asynchronous code. Declared with the async keyword, these functions automatically return a Promise. Inside an async function, you can use the await keyword to pause execution until a Promise resolves. This makes asynchronous code look and behave more like synchronous code, improving readability and maintainability. Error handling in async functions can be done with try/catch blocks."
+    },
+    {
+      "id": 5,
+      "content": "Higher-order functions in JavaScript are functions that operate on other functions, either by taking them as arguments or by returning them. Common examples include Array.prototype.map(), Array.prototype.filter(), and Array.prototype.reduce(). These functions allow for more declarative and functional programming styles. For example, [1, 2, 3].map(x => x * 2) creates a new array [2, 4, 6] by applying the function to each element."
+    },
+    {
+      "id": 6,
+      "content": "Promises in JavaScript represent the eventual completion or failure of an asynchronous operation and its resulting value. A Promise is in one of three states: pending, fulfilled, or rejected. The Promise constructor takes a function with two parameters: resolve and reject. Promises can be chained with .then() for success cases and .catch() for error handling. Multiple promises can be combined with Promise.all(), Promise.race(), Promise.any(), or Promise.allSettled()."
+    },
+    {
+      "id": 7,
+      "content": "Callbacks are functions passed as arguments to other functions, to be executed later or after an asynchronous operation completes. They were the primary way to handle asynchronous operations before Promises and async/await. Callback hell, also known as the pyramid of doom, refers to nested callbacks that make code hard to read and maintain. Modern JavaScript often uses Promises or async/await to avoid callback hell and write more maintainable asynchronous code."
+    },
+    {
+      "id": 8,
+      "content": "localStorage is a web storage API that allows JavaScript to store key-value pairs in a web browser with no expiration time. The data persists even after the browser is closed and reopened. Common methods include localStorage.setItem(key, value), localStorage.getItem(key), localStorage.removeItem(key), and localStorage.clear(). Unlike cookies, localStorage data is not sent to the server with each HTTP request, which can improve performance."
+    },
+    {
+      "id": 9,
+      "content": "Constructors in JavaScript are special functions used to create and initialize objects created with the new keyword. The this keyword inside a constructor refers to the new object being created. Constructor functions are typically named with a capital letter by convention. ES6 introduced class syntax, which provides a cleaner way to create constructor functions and prototype methods. Under the hood, JavaScript classes still use prototypal inheritance."
+    },
+    {
+      "id": 10,
+      "content": "Objects in JavaScript are collections of key-value pairs, where values can be primitives, other objects, or functions. They can be created using object literals {}, the new Object() syntax, or constructor functions. Object properties can be accessed using dot notation (obj.prop) or bracket notation (obj['prop']). Arrays are special objects with numeric indices and a length property. Array methods like push(), pop(), shift(), unshift(), and splice() modify the original array, while methods like map(), filter(), and reduce() return new arrays."
+    },
+    {
+      "id": 11,
+      "content": "JSON (JavaScript Object Notation) is a lightweight data interchange format based on JavaScript object syntax. It's easy for humans to read and write, and easy for machines to parse and generate. JSON supports data types like strings, numbers, booleans, null, arrays, and objects. The JSON.stringify() method converts JavaScript objects to JSON strings, while JSON.parse() converts JSON strings back to JavaScript objects. JSON is commonly used for transmitting data between a server and a web application."
+    },
+    {
+      "id": 12,
+      "content": "Function parameters are the names listed in the function definition, while arguments are the actual values passed to the function when it's called. JavaScript functions can have default parameters, which are used when an argument is not provided. The rest parameter syntax (...args) allows a function to accept an indefinite number of arguments as an array. The arguments object is an array-like object available within all functions that contains all passed arguments, though it's largely replaced by rest parameters in modern JavaScript."
+    }
+  ]
+}
