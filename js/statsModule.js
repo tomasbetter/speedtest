@@ -10,14 +10,14 @@
  * @returns {number} - Words per minute
  */
 function calculateWPM(correctChars, timeInSeconds) {
-    // Standard calculation: 5 characters = 1 word, convert to per minute
-    const words = correctChars / 5;
-    const minutes = timeInSeconds / 60;
-    
-    // Avoid division by zero
-    if (minutes === 0) return 0;
-    
-    return Math.round(words / minutes);
+  // Standard calculation: 5 characters = 1 word, convert to per minute
+  const words = correctChars / 5;
+  const minutes = timeInSeconds / 60;
+  
+  // Avoid division by zero
+  if (minutes === 0) return 0;
+  
+  return Math.round(words / minutes);
 }
 
 /**
@@ -27,10 +27,10 @@ function calculateWPM(correctChars, timeInSeconds) {
  * @returns {number} - Accuracy percentage
  */
 function calculateAccuracy(correctChars, totalChars) {
-    // Avoid division by zero
-    if (totalChars === 0) return 100;
-    
-    return Math.round((correctChars / totalChars) * 100);
+  // Avoid division by zero
+  if (totalChars === 0) return 100;
+  
+  return Math.round((correctChars / totalChars) * 100);
 }
 
 /**
@@ -40,18 +40,18 @@ function calculateAccuracy(correctChars, totalChars) {
  * @returns {Object} - Improvement status for speed and accuracy
  */
 function calculateImprovement(currentResult, previousResults) {
-    if (!previousResults || previousResults.length === 0) {
-        return { speed: false, accuracy: false, isFirstTest: true };
-    }
-    
-    // Get the most recent result
-    const lastResult = previousResults[previousResults.length - 1];
-    
-    return {
-        speed: currentResult.wpm > lastResult.wpm,
-        accuracy: currentResult.accuracy > lastResult.accuracy,
-        isFirstTest: false
-    };
+  if (!previousResults || previousResults.length === 0) {
+    return { speed: false, accuracy: false, isFirstTest: true };
+  }
+  
+  // Get the most recent result
+  const lastResult = previousResults[previousResults.length - 1];
+  
+  return {
+    speed: currentResult.wpm > lastResult.wpm,
+    accuracy: currentResult.accuracy > lastResult.accuracy,
+    isFirstTest: false,
+  };
 }
 
 /**
@@ -60,12 +60,12 @@ function calculateImprovement(currentResult, previousResults) {
  * @returns {string} - Formatted date string
  */
 function formatDate(date) {
-    return new Intl.DateTimeFormat('en-US', {
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    }).format(date);
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
 }
 
 /**
@@ -75,18 +75,18 @@ function formatDate(date) {
  * @returns {Object} - Test result object
  */
 function createTestResult(wpm, accuracy) {
-    return {
-        wpm,
-        accuracy,
-        date: new Date(),
-        formattedDate: formatDate(new Date())
-    };
+  return {
+    wpm,
+    accuracy,
+    date: new Date(),
+    formattedDate: formatDate(new Date()),
+  };
 }
 
 export {
-    calculateWPM,
-    calculateAccuracy,
-    calculateImprovement,
-    formatDate,
-    createTestResult
+  calculateWPM,
+  calculateAccuracy,
+  calculateImprovement,
+  formatDate,
+  createTestResult,
 };
