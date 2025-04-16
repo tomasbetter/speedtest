@@ -163,13 +163,22 @@ function handleTestComplete(stats) {
   const wpm = calculateWPM(stats.correctChars, elapsedTime);
   const accuracy = calculateAccuracy(stats.correctChars, stats.totalChars, stats.totalKeystrokes);
   
-  const result = createTestResult(wpm, accuracy);
-  saveResult(result);
+  // Get previous results BEFORE saving the current result
+  const previousResults = getResults();
   
+  const result = createTestResult(wpm, accuracy);
+  
+  // Update display
   elements.wpmDisplay.textContent = wpm;
   elements.accuracyDisplay.textContent = accuracy;
   
-  showImprovementIndicator(result);
+  // Show improvement indicator with previous results
+  showImprovementIndicator(result, previousResults);
+  
+  // Save the result AFTER calculating improvement
+  saveResult(result);
+  
+  // Show results section
   elements.resultsSection.classList.remove('hidden');
   updateHistory();
   elements.startButton.disabled = false;
@@ -199,9 +208,14 @@ function updateTimerDisplay(remainingTime) {
 
 /**
  * @param {Object} result - Current test result
+ * @param {Array} [previousResults] - Previous test results (optional)
  */
-function showImprovementIndicator(result) {
-  const previousResults = getResults();
+function showImprovementIndicator(result, previousResults) {
+  // If previousResults not provided, get them (for backward compatibility)
+  if (!previousResults) {
+    previousResults = getResults();
+  }
+  
   const improvement = calculateImprovement(result, previousResults);
   
   elements.improvementIndicator.classList.remove('improved', 'declined');
@@ -217,8 +231,14 @@ function showImprovementIndicator(result) {
   } else if (improvement.accuracy) {
     elements.improvementIndicator.textContent = 'You improved your typing accuracy!';
     elements.improvementIndicator.classList.add('improved');
+  } else if (improvement.matchesBest) {
+    elements.improvementIndicator.textContent = `Excellent consistency! You matched your personal best: ${improvement.bestWPM} WPM / ${improvement.bestAccuracy}% accuracy.`;
+    elements.improvementIndicator.classList.add('improved');
+  } else if (improvement.closeToSpeedBest || improvement.closeToAccuracyBest) {
+    elements.improvementIndicator.textContent = `Almost there! You're very close to your personal best: ${improvement.bestWPM} WPM / ${improvement.bestAccuracy}% accuracy.`;
+    elements.improvementIndicator.classList.add('improved');
   } else {
-    elements.improvementIndicator.textContent = 'Keep practicing to improve your results.';
+    elements.improvementIndicator.textContent = `Keep practicing to improve your results. Your best: ${improvement.bestWPM} WPM / ${improvement.bestAccuracy}% accuracy.`;
     elements.improvementIndicator.classList.add('declined');
   }
 }
