@@ -1,0 +1,53 @@
+/* Utilities Styles - Animations, responsive styles, and error messages */
+
+/* Animations */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* Error Messages */
+.error-message {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--error-color);
+    color: white;
+    padding: 10px 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+
+.error-message.fade-out {
+    opacity: 0;
+}
+
+.error {
+    color: var(--error-color);
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .text-display, .input-field {
+        font-size: 16px;
+    }
+    
+    .metrics {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .metric {
+        width: 100%;
+    }
+}

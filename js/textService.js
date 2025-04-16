@@ -149,9 +149,12 @@ async function fetchMultipleTexts(fetchFunction, count) {
     
     for (let i = 0; i < count; i++) {
       const text = await fetchFunction();
-      texts.push(text);
+      // Ensure each text ends with proper punctuation but doesn't have extra spaces
+      const cleanedText = text.trim().replace(/[.,:;!?]$/, '');
+      texts.push(cleanedText);
     }
     
+    // Join with period and space to ensure proper sentence separation
     return `${texts.join('. ')}.`;
   } catch (error) {
     console.error('Error fetching multiple texts:', error);

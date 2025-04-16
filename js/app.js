@@ -43,9 +43,6 @@ let chart;
 // For debugging
 window.typingTest = typingTest;
 
-/**
- * Initialize application
- */
 async function init() {
   timer = new Timer(
     60,
@@ -121,6 +118,8 @@ function startTest() {
  */
 function resetTest() {
   timer.reset();
+  
+  // First reset the typing test
   typingTest.reset();
   
   elements.inputField.value = '';
@@ -128,9 +127,16 @@ function resetTest() {
   elements.startButton.disabled = false;
   elements.resultsSection.classList.add('hidden');
   
-  loadNewText().catch((error) => {
-    console.error('Error loading new text on reset:', error);
-  });
+  // Load new text and ensure it's properly set
+  loadNewText()
+    .then(() => {
+      // Make sure the typing test is fully reset after new text is loaded
+      typingTest.reset();
+      console.log('Test reset complete with new text');
+    })
+    .catch((error) => {
+      console.error('Error loading new text on reset:', error);
+    });
 }
 
 /**

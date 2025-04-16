@@ -1,0 +1,81 @@
+/* Results Styles - Results section, metrics, improvement indicator, history table, and chart */
+
+/* Results Section */
+.metrics {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.metric {
+    text-align: center;
+    padding: 15px;
+    background-color: var(--light-bg);
+    border-radius: var(--border-radius);
+    min-width: 150px;
+}
+
+.metric-label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+#wpm-display, #accuracy-display {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.metric-unit {
+    font-size: 14px;
+    color: #777;
+}
+
+/* Improvement Indicator */
+.improvement-indicator {
+    text-align: center;
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: var(--border-radius);
+}
+
+.improved {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: var(--secondary-color);
+}
+
+.declined {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: var(--error-color);
+}
+
+/* History Section */
+#chart-container {
+    margin-bottom: 30px;
+    height: 300px;
+}
+
+#history-table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: var(--light-bg);
+    font-weight: bold;
+}
+
+tr:hover {
+    background-color: rgba(52, 152, 219, 0.05);
+}

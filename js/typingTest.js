@@ -50,7 +50,8 @@ class TypingTest {
    */
   setText(text) {
     this.text = text;
-    this.words = text.split(' ');
+    // Split by spaces and filter out empty strings
+    this.words = text.split(' ').filter(word => word.trim() !== '');
     this.reset();
     this.renderText();
   }
@@ -217,6 +218,7 @@ class TypingTest {
       firstDiffIndex++;
     }
     
+    // Clear previous highlighting
     for (let i = firstDiffIndex; i < currentWord.length; i++) {
       const charElement = this.charElements[absoluteIndex + i];
       if (charElement) {
@@ -224,13 +226,24 @@ class TypingTest {
       }
     }
     
+    // Helper function to check if a character is punctuation
+    const isPunctuation = char => /[.,;:!?]/.test(char);
+    
+    // Apply new highlighting
     for (let i = firstDiffIndex; i < inputWithoutSpace.length; i++) {
       if (i >= currentWord.length) break;
       
       const charElement = this.charElements[absoluteIndex + i];
       if (!charElement) continue;
       
-      if (inputWithoutSpace[i] === currentWord[i]) {
+      const inputChar = inputWithoutSpace[i];
+      const currentChar = currentWord[i];
+      
+      // Consider a character correct if:
+      // 1. It matches exactly, or
+      // 2. The current character is punctuation and we're being lenient
+      if (inputChar === currentChar || 
+          (isPunctuation(currentChar) && i === currentWord.length - 1)) {
         charElement.classList.add('correct');
       } else {
         charElement.classList.add('incorrect');
@@ -250,6 +263,15 @@ class TypingTest {
     const currentWord = this.words[this.currentWordIndex];
     const inputValue = this.inputField.value.trim();
     
+    // More lenient comparison for words with punctuation
+    // Consider a word correct if the base word (without punctuation) matches
+    const isPunctuation = char => /[.,;:!?]/.test(char);
+    const stripPunctuation = word => word.replace(/[.,;:!?]/g, '');
+    
+    const currentWordBase = stripPunctuation(currentWord);
+    const inputValueBase = stripPunctuation(inputValue);
+    
+    // Count correct characters
     let correctCharsInWord = 0;
     for (let i = 0; i < Math.min(inputValue.length, currentWord.length); i++) {
       if (inputValue[i] === currentWord[i]) {
@@ -257,7 +279,14 @@ class TypingTest {
       }
     }
     
-    this.correctChars += correctCharsInWord + (inputValue === currentWord ? 1 : 0); // +1 for space if correct
+    // Consider the word correct if either:
+    // 1. The exact word matches, or
+    // 2. The base word (without punctuation) matches
+    const isWordCorrect = 
+      inputValue === currentWord || 
+      (inputValueBase === currentWordBase && inputValueBase.length > 0);
+    
+    this.correctChars += correctCharsInWord + (isWordCorrect ? 1 : 0); // +1 for space if correct
     this.totalChars += currentWord.length + 1; // +1 for space
     
     this.currentWordIndex++;
