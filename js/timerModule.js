@@ -1,10 +1,5 @@
 /**
- * Timer Module
- * Responsible for handling the timer functionality
- */
-
-/**
- * Creates a timer that counts down from a specified duration
+ * Timer Module - Countdown timer functionality
  */
 class Timer {
   /**
@@ -22,7 +17,7 @@ class Timer {
   }
 
   /**
-   * Starts the timer
+   * Start countdown timer
    */
   start() {
     if (this.isRunning) return;
@@ -31,17 +26,14 @@ class Timer {
     const startTime = Date.now();
     const initialTime = this.remainingTime;
     
-    // Update timer display immediately
     this.onTick(this.remainingTime);
     
     this.timerId = setInterval(() => {
       const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
       this.remainingTime = initialTime - elapsedSeconds;
       
-      // Update the display
       this.onTick(this.remainingTime);
       
-      // Check if timer has completed
       if (this.remainingTime <= 0) {
         this.stop();
         this.onComplete();
@@ -50,7 +42,7 @@ class Timer {
   }
 
   /**
-   * Stops the timer
+   * Stop countdown timer
    */
   stop() {
     if (this.timerId) {
@@ -61,7 +53,7 @@ class Timer {
   }
 
   /**
-   * Resets the timer to its initial duration
+   * Reset timer to initial duration
    */
   reset() {
     this.stop();
@@ -70,16 +62,14 @@ class Timer {
   }
 
   /**
-   * Returns whether the timer is currently running
-   * @returns {boolean} True if the timer is running, false otherwise
+   * @returns {boolean} Whether timer is running
    */
   getIsRunning() {
     return this.isRunning;
   }
 
   /**
-   * Returns the remaining time
-   * @returns {number} The remaining time in seconds
+   * @returns {number} Remaining time in seconds
    */
   getRemainingTime() {
     return this.remainingTime;

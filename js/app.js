@@ -1,6 +1,5 @@
 /**
- * Main Application Module
- * Ties together all the other modules and handles the application logic
+ * Main Application - Coordinates typing test functionality
  */
 
 import { fetchText } from './textService.js';
@@ -18,50 +17,42 @@ import {
   getLatestResult,
 } from './storageModule.js';
 
-// DOM Elements
 const elements = {
-  // Test elements
   textDisplay: document.getElementById('text-display'),
   inputField: document.getElementById('input-field'),
   currentWordDisplay: document.getElementById('current-word'),
   timer: document.getElementById('timer'),
   
-  // Control buttons
   startButton: document.getElementById('start-btn'),
   resetButton: document.getElementById('reset-btn'),
   
-  // Results elements
   resultsSection: document.getElementById('results-section'),
   wpmDisplay: document.getElementById('wpm-display'),
   accuracyDisplay: document.getElementById('accuracy-display'),
   improvementIndicator: document.getElementById('improvement-indicator'),
   
-  // History elements
   historyTable: document.getElementById('history-table'),
   historyBody: document.getElementById('history-body'),
   progressChart: document.getElementById('progress-chart'),
 };
 
-// Global variables
 let typingTest;
 let timer;
 let chart;
 
-// Make typingTest globally accessible for debugging
+// For debugging
 window.typingTest = typingTest;
 
 /**
- * Initializes the application
+ * Initialize application
  */
 async function init() {
-  // Create timer instance
   timer = new Timer(
-    60, // 60 seconds
+    60,
     updateTimerDisplay,
     handleTimerComplete,
   );
   
-  // Create typing test instance
   typingTest = new TypingTest(
     {
       textDisplay: elements.textDisplay,
@@ -75,21 +66,16 @@ async function init() {
     },
   );
   
-  // Make typingTest globally accessible for debugging
   window.typingTest = typingTest;
   
-  // Add event listeners
   elements.startButton.addEventListener('click', startTest);
   elements.resetButton.addEventListener('click', resetTest);
   
-  // Add keyboard shortcuts
   document.addEventListener('enter-key-pressed', startTest);
   document.addEventListener('escape-key-pressed', resetTest);
   
-  // Load history data
   loadHistory();
   
-  // Try to load initial text
   try {
     await loadNewText();
     elements.startButton.disabled = false;
@@ -100,21 +86,15 @@ async function init() {
 }
 
 /**
- * Loads a new text for the typing test
+ * Load new text for typing test
  */
 async function loadNewText() {
   try {
-    // Show loading state
     elements.textDisplay.innerHTML = '<p>Loading text...</p>';
     elements.inputField.disabled = true;
     
-    // Fetch text
     const text = await fetchText();
-    
-    // Set the text in the typing test
     typingTest.setText(text);
-    
-    // Enable the input field
     elements.inputField.disabled = false;
     
     return text;
@@ -125,153 +105,91 @@ async function loadNewText() {
   }
 }
 
-// Store reference to the space key handler
-let spaceKeyHandler = null;
-
 /**
- * Starts the typing test
+ * Start typing test
  */
 function startTest() {
-  // Reset the test
   resetTest();
   
-  // Enable the input field
   elements.inputField.disabled = false;
-  
-  // Focus the input field
   elements.inputField.focus();
-  
-  // Hide results section
   elements.resultsSection.classList.add('hidden');
-  
-  // Remove any existing event listener to prevent accumulation
-  if (spaceKeyHandler) {
-    elements.inputField.removeEventListener('keydown', spaceKeyHandler);
-  }
-  
-  // Create a new event handler and store the reference
-  spaceKeyHandler = (event) => {
-    if (event.key === ' ' && typingTest.getIsActive()) {
-      const currentWord = typingTest.getWords()[typingTest.getCurrentWordIndex()];
-      const inputValue = elements.inputField.value.trim();
-      
-      if (inputValue === currentWord) {
-        event.preventDefault();
-        typingTest.moveToNextWord();
-      }
-    }
-  };
-  
-  // Add the event listener
-  elements.inputField.addEventListener('keydown', spaceKeyHandler);
 }
 
 /**
- * Resets the typing test
+ * Reset typing test
  */
 function resetTest() {
-  // Reset the timer
   timer.reset();
-  
-  // Reset the typing test
   typingTest.reset();
   
-  // Clear and enable the input field
   elements.inputField.value = '';
   elements.inputField.disabled = false;
-  
-  // Enable the start button
   elements.startButton.disabled = false;
-  
-  // Hide results section
   elements.resultsSection.classList.add('hidden');
   
-  // Load new text
   loadNewText().catch((error) => {
     console.error('Error loading new text on reset:', error);
   });
 }
 
 /**
- * Handles the start of the typing test
+ * Handle test start
  */
 function handleTestStart() {
-  // Start the timer
   timer.start();
-  
-  // Disable the start button
   elements.startButton.disabled = true;
 }
 
 /**
- * Handles updates during the typing test
  * @param {Object} stats - Current test statistics
  */
 function handleTestUpdate(stats) {
-  // Calculate current WPM and accuracy
   const elapsedTime = 60 - timer.getRemainingTime();
   const wpm = calculateWPM(stats.correctChars, elapsedTime);
-  const accuracy = calculateAccuracy(stats.correctChars, stats.totalChars);
+  const accuracy = calculateAccuracy(stats.correctChars, stats.totalChars, stats.totalKeystrokes);
   
-  // Update the displays
   elements.wpmDisplay.textContent = wpm;
   elements.accuracyDisplay.textContent = accuracy;
 }
 
 /**
- * Handles the completion of the typing test
  * @param {Object} stats - Final test statistics
  */
 function handleTestComplete(stats) {
-  // Stop the timer
   timer.stop();
   
-  // Calculate final WPM and accuracy
   const elapsedTime = 60 - timer.getRemainingTime();
   const wpm = calculateWPM(stats.correctChars, elapsedTime);
-  const accuracy = calculateAccuracy(stats.correctChars, stats.totalChars);
+  const accuracy = calculateAccuracy(stats.correctChars, stats.totalChars, stats.totalKeystrokes);
   
-  // Create a result object
   const result = createTestResult(wpm, accuracy);
-  
-  // Save the result
   saveResult(result);
   
-  // Update the displays
   elements.wpmDisplay.textContent = wpm;
   elements.accuracyDisplay.textContent = accuracy;
   
-  // Show improvement indicator
   showImprovementIndicator(result);
-  
-  // Show results section
   elements.resultsSection.classList.remove('hidden');
-  
-  // Update history
   updateHistory();
-  
-  // Enable the start button
   elements.startButton.disabled = false;
 }
 
 /**
- * Handles the completion of the timer
+ * Handle timer completion
  */
 function handleTimerComplete() {
-  // Complete the test if it's active
   if (typingTest.getIsActive()) {
     typingTest.complete();
   }
 }
 
 /**
- * Updates the timer display
  * @param {number} remainingTime - Remaining time in seconds
  */
 function updateTimerDisplay(remainingTime) {
   elements.timer.textContent = remainingTime;
   
-  // Add visual indication when time is running low
   if (remainingTime <= 10) {
     elements.timer.classList.add('time-low');
   } else {
@@ -280,20 +198,14 @@ function updateTimerDisplay(remainingTime) {
 }
 
 /**
- * Shows the improvement indicator
  * @param {Object} result - Current test result
  */
 function showImprovementIndicator(result) {
-  // Get previous results
   const previousResults = getResults();
-  
-  // Calculate improvement
   const improvement = calculateImprovement(result, previousResults);
   
-  // Clear previous classes
   elements.improvementIndicator.classList.remove('improved', 'declined');
   
-  // Show appropriate message
   if (improvement.isFirstTest) {
     elements.improvementIndicator.textContent = 'This is your first test!';
   } else if (improvement.speed && improvement.accuracy) {
@@ -312,7 +224,7 @@ function showImprovementIndicator(result) {
 }
 
 /**
- * Loads and displays the user's history
+ * Load and display history
  */
 function loadHistory() {
   updateHistoryTable();
@@ -320,16 +232,12 @@ function loadHistory() {
 }
 
 /**
- * Updates the history table with the latest results
+ * Update history table with latest results
  */
 function updateHistoryTable() {
-  // Get all results
   const results = getResults();
-  
-  // Clear the table body
   elements.historyBody.innerHTML = '';
   
-  // If no results, show a message
   if (results.length === 0) {
     const row = document.createElement('tr');
     const cell = document.createElement('td');
@@ -341,48 +249,39 @@ function updateHistoryTable() {
     return;
   }
   
-  // Add each result to the table (most recent first)
   results.slice().reverse().forEach((result) => {
     const row = document.createElement('tr');
     
-    // Date cell
     const dateCell = document.createElement('td');
     dateCell.textContent = result.formattedDate;
     row.appendChild(dateCell);
     
-    // WPM cell
     const wpmCell = document.createElement('td');
     wpmCell.textContent = result.wpm;
     row.appendChild(wpmCell);
     
-    // Accuracy cell
     const accuracyCell = document.createElement('td');
     accuracyCell.textContent = result.accuracy;
     row.appendChild(accuracyCell);
     
-    // Add the row to the table
     elements.historyBody.appendChild(row);
   });
 }
 
 /**
- * Updates the progress chart with the latest results
+ * Update progress chart with latest results
  */
 function updateProgressChart() {
-  // Get all results
   const results = getResults();
   
-  // If no results, don't update the chart
   if (results.length === 0) {
     return;
   }
   
-  // Prepare data for the chart
   const labels = results.map((result) => result.formattedDate);
   const wpmData = results.map((result) => result.wpm);
   const accuracyData = results.map((result) => result.accuracy);
   
-  // Chart configuration
   const chartConfig = {
     type: 'line',
     data: {
@@ -409,9 +308,7 @@ function updateProgressChart() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      animation: {
-        duration: 300, // Faster animations
-      },
+      animation: { duration: 300 },
       scales: {
         y: {
           beginAtZero: true,
@@ -438,20 +335,18 @@ function updateProgressChart() {
     },
   };
   
-  // If chart already exists, update it instead of destroying and recreating
   if (chart) {
     chart.data.labels = labels;
     chart.data.datasets[0].data = wpmData;
     chart.data.datasets[1].data = accuracyData;
-    chart.update('none'); // Update without animation for better performance
+    chart.update('none'); // Better performance
   } else {
-    // Create the chart if it doesn't exist
     chart = new Chart(elements.progressChart, chartConfig);
   }
 }
 
 /**
- * Updates the history display
+ * Update history display
  */
 function updateHistory() {
   updateHistoryTable();
@@ -459,35 +354,28 @@ function updateHistory() {
 }
 
 /**
- * Handles keyboard shortcuts
  * @param {KeyboardEvent} event - Keyboard event
  */
 function handleKeyboardShortcuts(event) {
-  // Enter key to restart
   if (event.key === 'Enter' && !typingTest.getIsActive()) {
     startTest();
   }
   
-  // Escape key to reset
   if (event.key === 'Escape') {
     resetTest();
   }
 }
 
 /**
- * Shows an error message
  * @param {string} message - Error message to display
  */
 function showError(message) {
-  // Create error element
   const errorElement = document.createElement('div');
   errorElement.className = 'error-message';
   errorElement.textContent = message;
   
-  // Add to the page
   document.body.appendChild(errorElement);
   
-  // Remove after a delay
   setTimeout(() => {
     errorElement.classList.add('fade-out');
     setTimeout(() => {
@@ -496,5 +384,5 @@ function showError(message) {
   }, 3000);
 }
 
-// Initialize the application when the DOM is loaded
+// Initialize on DOM load
 document.addEventListener('DOMContentLoaded', init);

@@ -1,26 +1,17 @@
 /**
- * Storage Module
- * Responsible for saving and retrieving user data from localStorage
+ * Storage Module - LocalStorage data persistence
  */
-
-// Local storage key for typing test results
 const STORAGE_KEY = 'typing_test_results';
 
 /**
- * Saves a test result to localStorage
- * @param {Object} result - Test result object to save
+ * @param {Object} result - Test result to save
+ * @returns {boolean} Success status
  */
 function saveResult(result) {
   try {
-    // Get existing results
     const results = getResults();
-    
-    // Add new result
     results.push(result);
-    
-    // Save back to localStorage
     localStorage.setItem(STORAGE_KEY, JSON.stringify(results));
-    
     return true;
   } catch (error) {
     console.error('Error saving result to localStorage:', error);
@@ -29,14 +20,12 @@ function saveResult(result) {
 }
 
 /**
- * Retrieves all test results from localStorage
- * @returns {Array} - Array of test result objects
+ * @returns {Array} All saved test results
  */
 function getResults() {
   try {
     const resultsJSON = localStorage.getItem(STORAGE_KEY);
     
-    // If no results exist yet, return empty array
     if (!resultsJSON) {
       return [];
     }
@@ -49,8 +38,7 @@ function getResults() {
 }
 
 /**
- * Clears all test results from localStorage
- * @returns {boolean} - True if successful, false otherwise
+ * @returns {boolean} Success status
  */
 function clearResults() {
   try {
@@ -63,8 +51,7 @@ function clearResults() {
 }
 
 /**
- * Gets the most recent test result
- * @returns {Object|null} - Most recent test result or null if none exists
+ * @returns {Object|null} Most recent test result
  */
 function getLatestResult() {
   const results = getResults();
