@@ -185,6 +185,19 @@ function handleTestComplete(stats) {
   elements.resultsSection.classList.remove('hidden');
   updateHistory();
   elements.startButton.disabled = false;
+  
+  // Add a longer delay before scrolling to ensure the element is fully rendered
+  setTimeout(() => {
+    // Get the position of the results section relative to the document
+    const rect = elements.resultsSection.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    
+    // Scroll to the results section
+    window.scrollTo({
+      top: rect.top + scrollTop - 20, // Subtract 20px for a little padding
+      behavior: 'smooth'
+    });
+  }, 300); // 300ms delay
 }
 
 /**
