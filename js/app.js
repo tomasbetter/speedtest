@@ -40,9 +40,6 @@ let typingTest;
 let timer;
 let chart;
 
-// For debugging
-window.typingTest = typingTest;
-
 async function init() {
   timer = new Timer(
     60,
