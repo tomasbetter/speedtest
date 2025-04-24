@@ -71,7 +71,11 @@ function setupKeyboardShortcuts(inputField, startButton) {
         if (event.key === 'Enter' && window.timerFinished) {
             restartTest(inputField, startButton);
         }
-        
+
+        if (event.key === 'Enter' && !window.timerStarted) {
+            inputField.focus();
+        }
+
         if (event.key === 'Escape') {
             restartTest(inputField, startButton);
         }
