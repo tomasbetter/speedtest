@@ -4,6 +4,8 @@
  */
 function startWpmTracking() {
     window.typingStartTime = new Date();
+    window.finalWpm = null;
+    window.finalAccuracy = null;
     
     if (window.wpmUpdateInterval !== null) {
         clearInterval(window.wpmUpdateInterval);
@@ -31,9 +33,15 @@ function calculateWpm() {
 
 /**
  * Updates the WPM display with the current calculated value
+ * Uses the final WPM value if the timer has finished
  */
 function updateWpm() {
-    const wpm = calculateWpm();
+    let wpm;
+    if (window.timerFinished && window.finalWpm !== null) {
+        wpm = window.finalWpm;
+    } else {
+        wpm = calculateWpm();
+    }
     document.getElementById('wpm').textContent = `WPM: ${wpm}`;
 }
 
@@ -315,6 +323,10 @@ function saveWpmData() {
     const wpm = elapsedMinutes > 0 ? Math.round(window.correctWordsCount / elapsedMinutes) : 0;
     const accuracy = calculateAccuracy();
     
+    // Store the final WPM and accuracy values
+    window.finalWpm = wpm;
+    window.finalAccuracy = accuracy;
+    
     const improvement = checkImprovement(wpm, accuracy);
     
     const record = createTypingRecord(wpm, accuracy);
@@ -336,6 +348,8 @@ function resetWpmTracking() {
     window.typingStartTime = null;
     window.totalCharactersTyped = 0;
     window.correctCharactersTyped = 0;
+    window.finalWpm = null;
+    window.finalAccuracy = null;
     
     document.getElementById('wpm').textContent = 'Your WPM';
     document.getElementById('accuracy').textContent = 'Your Accuracy';
@@ -344,11 +358,18 @@ function resetWpmTracking() {
 
 /**
  * Updates the accuracy display with the current calculated value
+ * Uses the final accuracy value if the timer has finished
  */
 function updateAccuracy() {
-    if (!window.timerStarted || window.totalCharactersTyped === 0) return;
+    if (!window.timerStarted && window.totalCharactersTyped === 0 && !window.finalAccuracy) return;
     
-    const accuracy = calculateAccuracy();
+    let accuracy;
+    if (window.timerFinished && window.finalAccuracy !== null) {
+        accuracy = window.finalAccuracy;
+    } else {
+        accuracy = calculateAccuracy();
+    }
+    
     document.getElementById('accuracy').textContent = `Accuracy: ${accuracy}%`;
 }
 
